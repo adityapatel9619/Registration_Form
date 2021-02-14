@@ -86,6 +86,9 @@
 
 <script>
     $(document).ready(function () {
+
+        disableAge();
+
         $('#btnSubmit').click(function () {
 
             FormValidate();
@@ -163,8 +166,8 @@
                 "border": "",
                 "background": ""
             })
-            $('#txtAge').attr('disabled', true);
-            $('#txtAge').html('');
+            
+            //$('#txtAge').html('');
         }
 
         // Validate Mobile Number
@@ -211,6 +214,15 @@
                 "background": ""
             })
         }
+    }
+
+
+    function disableAge() {
+        // Disables the age text field
+
+        $('#txtDate').click(function () {
+            $('#txtAge').prop('disabled', true);
+        });
     }
 
 
