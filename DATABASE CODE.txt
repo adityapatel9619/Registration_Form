@@ -1,0 +1,105 @@
+-- NEW Query
+--CREATE DATABASE Registerationform
+
+--USE Registerationform
+
+--CREATE TABLE [dbo].[Registeration](
+--	ID INT IDENTITY(1,1) NOT NULL,
+--	Firstname VARCHAR(25) NULL,
+--	Lastname VARCHAR(25) NULL,
+--	Addressdetails VARCHAR(255) NULL,
+--	Dateofbirth DATETIME,
+--	Age INT,
+--	Mobilenumber VARCHAR(10) NULL,
+--	Emailid VARCHAR(50) NULL,
+--	Qualification INT NULL,
+--	CreatedBy INT NULL,
+--	CreatedOn DATETIME NULL,
+--	ModifiedBy INT NULL,
+--	ModifiedOn DATETIME NULL,
+--	IsDeleted INT NULL,
+--	DeletedBy INT NULL,
+--	DeletedOn DATETIME NULL) 
+
+
+// PROCEDURE
+
+CREATE PROCEDURE [dbo].[Proc_Registeration]
+	
+	@ID INT,
+	@Firstname VARCHAR(50) = NULL,
+	@Lastname VARCHAR(50) = NULL,
+	@Addressdetails VARCHAR(255) = NULL,
+	@Dateofbirth DATETIME = NULL,
+	@Age INT = NULL,
+	@Mobilenumber VARCHAR(10) = NULL,
+	@Emailid VARCHAR(50) = NULL,
+	@Qualification INT = NULL,
+	@Userid INT = NULL,
+	@CreatedBy INT = NULL,
+	@CreatedOn DATE = NULL,
+	@Type VARCHAR(10) = NULL,
+	@ReturnMessage VARCHAR(100) OUTPUT
+	
+AS 
+BEGIN
+
+IF(@Type = 'A' AND @ID = 0)
+	BEGIN 
+		INSERT INTO [dbo].[Registerationform](
+							Firstname
+							,Lastname
+							,Addressdetails
+							,Dateofbirth
+							,Age
+							,Mobilenumber
+							,Emailid
+							,Qualification
+							,CreatedBy
+							,CreatedOn
+							)
+							VALUES(
+							@Firstname
+							,@Lastname
+							,@Addressdetails
+							,@Dateofbirth
+							,@Addressdetails
+							,@Dateofbirth
+							,@Age
+							,@Mobilenumber
+							,@Emailid
+							,@Userid
+							,GETDATE()
+							)
+							SET @ID = @@IDENTITY
+			SET @ReturnMessage = 'Saved Successfully !!!'
+	END
+ELSE IF(@Type = 'E' AND @ID > 0)
+	BEGIN
+		UPDATE Registerationform SET
+				Firstname = @Firstname
+				,Lastname = @Lastname
+				,Addressdetails = @Addressdetails
+				,Dateofbirth = @Dateofbirth
+				,Age = @Age
+				,Mobilenumber = @Mobilenumber
+				,Emailid = @Emailid
+				,Qualification = @Qualification
+				WHERE ID = @ID
+				SET  @ReturnMessage = 'Updated Successfully !!!'
+	END
+IF(@Type = 'S' AND @ID = 0)
+	BEGIN
+		SELECT * FROM Registerationform
+	END
+ELSE IF(@Type = 'S' AND @ID > 0)
+	BEGIN
+		SELECT * FROM Registerationform WHERE IsDeleted = 0 ORDER BY ID DESC
+	END
+
+IF(@Type = 'D')
+	BEGIN
+		DELETE FROM Registerationform WHERE ID = @ID
+		SET @ReturnMessage = 'Deleted Successfully'
+	END							 
+END			
