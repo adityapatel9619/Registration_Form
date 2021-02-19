@@ -103,3 +103,95 @@ IF(@Type = 'D')
 		SET @ReturnMessage = 'Deleted Successfully'
 	END							 
 END			
+
+
+-------------  19/02/2021 ------------
+
+
+ALTER PROCEDURE [dbo].[Proc_Registeration]
+	
+	@ID INT,
+	@Firstname VARCHAR(50) = NULL,
+	@Lastname VARCHAR(50) = NULL,
+	@Addressdetails VARCHAR(255) = NULL,
+	@Dateofbirth DATETIME = NULL,
+	@Age INT = NULL,
+	@Mobilenumber VARCHAR(10) = NULL,
+	@Emailid VARCHAR(50) = NULL,
+	@Qualification INT = NULL,
+	@Userid INT = NULL,
+	@Type VARCHAR(10) = NULL,
+	@ReturnMessage VARCHAR(100) OUTPUT
+	
+AS 
+BEGIN
+
+IF(@Type = 'A' AND @ID = 0)
+	BEGIN 
+		INSERT INTO Registeration(
+							Firstname
+							,Lastname
+							,Addressdetails
+							,Dateofbirth
+							,Age
+							,Mobilenumber
+							,Emailid
+							,Qualification
+							,CreatedBy
+							,CreatedOn
+							)
+							VALUES(
+							@Firstname
+							,@Lastname
+							,@Addressdetails
+							,@Dateofbirth
+							,@Age
+							,@Mobilenumber
+							,@Emailid
+							,@Qualification
+							,@Userid
+							,GETDATE()
+							)
+							SET @ID = @@IDENTITY
+			SET @ReturnMessage = 'Saved Successfully !!!'
+	END
+ELSE IF(@Type = 'E' AND @ID > 0)
+	BEGIN
+		UPDATE Registeration SET
+				Firstname = @Firstname
+				,Lastname = @Lastname
+				,Addressdetails = @Addressdetails
+				,Dateofbirth = @Dateofbirth
+				,Age = @Age
+				,Mobilenumber = @Mobilenumber
+				,Emailid = @Emailid
+				,Qualification = @Qualification
+				WHERE ID = @ID
+				SET  @ReturnMessage = 'Updated Successfully !!!'
+	END
+IF(@Type = 'S' AND @ID = 0)
+	BEGIN
+		SELECT * FROM Registeration
+	END
+ELSE IF(@Type = 'S' AND @ID > 0)
+	BEGIN
+		SELECT * FROM Registeration WHERE IsDeleted = 0 ORDER BY ID DESC
+	END
+
+IF(@Type = 'D')
+	BEGIN
+		DELETE FROM Registeration WHERE ID = @ID
+		SET @ReturnMessage = 'Deleted Successfully'
+	END							 
+END			
+
+
+-- For INSERTING 
+--DECLARE @ReturnMessage VARCHAR(100) EXECUTE Proc_Registeration 0,'Aditya','Patel','MR','1999-01-01',21,'8282828282','a@gmail.com',1,1,'A',@ReturnMessage OUTPUT;SELECT @ReturnMessage
+--DECLARE @ReturnMessage VARCHAR(100) EXECUTE Proc_Registeration 0,'Rupesh','Chaudhry','MALAD','1999-12-04',22,'1234567890','rup@gmail.com',2,1,'A',@ReturnMessage OUTPUT;SELECT @ReturnMessage
+
+--  For UPDATING
+--DECLARE @ReturnMessage VARCHAR(100) EXECUTE Proc_Registeration 2,'Aditya','Patel','MiraRoad','1999-07-10',21,'0987654321','adi@gmail.com',2,1,'E',@ReturnMessage OUTPUT;SELECT @ReturnMessage
+
+-- For DELETE
+--DECLARE @ReturnMessage VARCHAR(100) EXECUTE Proc_Registeration 1,'Aditya','Patel','MR','1999-01-01',21,'8282828282','a@gmail.com',1,1,'D', @ReturnMessage OUTPUT;SELECT @ReturnMessage
